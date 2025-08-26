@@ -1,0 +1,22 @@
+#include <iostream>
+#include <unordered_set>
+#include <vector>
+using namespace std;
+
+int countDistinct(const vector<int> &arr) {
+    unordered_set<int> distinctElements;
+
+    for (int num : arr) {
+        distinctElements.insert(num);
+    }
+    return distinctElements.size();
+}
+
+int main() {
+    vector<int> arr = {1, 2, 2, 3, 4, 4, 5, 1};
+
+    cout << "Total distinct elements = " 
+         << countDistinct(arr) << endl;
+
+    return 0;
+}
