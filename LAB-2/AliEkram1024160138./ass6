@@ -1,0 +1,129 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+struct Element {
+    int row, col, val;
+};
+
+struct SparseMatrix {
+    int rows, cols, num;
+    vector<Element> elements;
+
+    // Constructor
+    SparseMatrix(int r, int c, int n) : rows(r), cols(c), num(n) {
+        elements.resize(n);
+    }
+
+    // Display in triplet form
+    void display() {
+        cout << "Row Col Val\n";
+        for (auto &e : elements) {
+            cout << e.row << "   " << e.col << "   " << e.val << "\n";
+        }
+    }
+
+    // (a) Transpose
+    SparseMatrix transpose() {
+        SparseMatrix result(cols, rows, num);
+        int k = 0;
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < num; j++) {
+                if (elements[j].col == i) {
+                    result.elements[k++] = {elements[j].col, elements[j].row, elements[j].val};
+                }
+            }
+        }
+        return result;
+    }
+
+    // (b) Addition
+    SparseMatrix add(SparseMatrix &B) {
+        if (rows != B.rows || cols != B.cols) {
+            throw invalid_argument("Matrix dimensions do not match for addition");
+        }
+
+        vector<Element> resultElems;
+        int i = 0, j = 0;
+        while (i < num && j < B.num) {
+            if (elements[i].row < B.elements[j].row ||
+                (elements[i].row == B.elements[j].row && elements[i].col < B.elements[j].col)) {
+                resultElems.push_back(elements[i++]);
+            } else if (B.elements[j].row < elements[i].row ||
+                       (B.elements[j].row == elements[i].row && B.elements[j].col < elements[i].col)) {
+                resultElems.push_back(B.elements[j++]);
+            } else {
+                int sum = elements[i].val + B.elements[j].val;
+                if (sum != 0)
+                    resultElems.push_back({elements[i].row, elements[i].col, sum});
+                i++, j++;
+            }
+        }
+        while (i < num) resultElems.push_back(elements[i++]);
+        while (j < B.num) resultElems.push_back(B.elements[j++]);
+
+        SparseMatrix result(rows, cols, resultElems.size());
+        result.elements = resultElems;
+        return result;
+    }
+
+    // (c) Multiplication
+    SparseMatrix multiply(SparseMatrix &B) {
+        if (cols != B.rows) {
+            throw invalid_argument("Matrix dimensions do not match for multiplication");
+        }
+
+        // Transpose B for easy column access
+        SparseMatrix B_T = B.transpose();
+        vector<Element> resultElems;
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < B.cols; j++) {
+                int sum = 0;
+                for (auto &a : elements) {
+                    if (a.row == i) {
+                        for (auto &b : B_T.elements) {
+                            if (b.row == j && b.col == a.col) {
+                                sum += a.val * b.val;
+                            }
+                        }
+                    }
+                }
+                if (sum != 0) {
+                    resultElems.push_back({i, j, sum});
+                }
+            }
+        }
+
+        SparseMatrix result(rows, B.cols, resultElems.size());
+        result.elements = resultElems;
+        return result;
+    }
+};
+
+// ---------------- Main ----------------
+int main() {
+    // Example: Sparse Matrix A
+    SparseMatrix A(4, 5, 6);
+    A.elements = {{0,2,3}, {0,4,4}, {1,2,5}, {1,3,7}, {3,1,2}, {3,2,6}};
+
+    cout << "Matrix A (Triplet):\n";
+    A.display();
+
+    // (a) Transpose
+    cout << "\nTranspose of A:\n";
+    SparseMatrix T = A.transpose();
+    T.display();
+
+    // (b) Addition A + A
+    cout << "\nA + A:\n";
+    SparseMatrix Sum = A.add(A);
+    Sum.display();
+
+    // (c) Multiplication (A^T * A)
+    cout << "\nA^T * A:\n";
+    SparseMatrix Prod = T.multiply(A);
+    Prod.display();
+
+    return 0;
+}
