@@ -1,0 +1,149 @@
+Q1) Menu-driven program for array operations
+#include <iostream>
+using namespace std;
+#define MAX 100
+int arr[MAX],n=0;
+void create(){
+    cout<<"Enter number of elements: ";
+    cin>>n;
+    cout<<"Enter elements: ";
+    for(int i=0;i<n;i++) cin>>arr[i];
+}
+void display(){
+    if(n==0) cout<<"Array empty\n";
+    else{
+        for(int i=0;i<n;i++) cout<<arr[i]<<" ";
+        cout<<endl;
+    }
+}
+void insert(){
+    int pos,val;
+    if(n==MAX) cout<<"Array full\n";
+    else{
+        cout<<"Enter position and value: ";
+        cin>>pos>>val;
+        for(int i=n;i>pos;i--) arr[i]=arr[i-1];
+        arr[pos]=val;
+        n++;
+    }
+}
+void del(){
+    int pos;
+    if(n==0) cout<<"Array empty\n";
+    else{
+        cout<<"Enter position: ";
+        cin>>pos;
+        for(int i=pos;i<n-1;i++) arr[i]=arr[i+1];
+        n--;
+    }
+}
+void search(){
+    int key,flag=0;
+    cout<<"Enter value to search: ";
+    cin>>key;
+    for(int i=0;i<n;i++){
+        if(arr[i]==key){
+            cout<<"Found at position "<<i<<endl;
+            flag=1;
+        }
+    }
+    if(!flag) cout<<"Not found\n";
+}
+int main(){
+    int ch;
+    do{
+        cout<<"\n1.CREATE\n2.DISPLAY\n3.INSERT\n4.DELETE\n5.LINEAR SEARCH\n6.EXIT\n";
+        cin>>ch;
+        switch(ch){
+            case 1:create();break;
+            case 2:display();break;
+            case 3:insert();break;
+            case 4:del();break;
+            case 5:search();break;
+        }
+    }while(ch!=6);
+}
+Q2) Remove duplicates from array
+#include <iostream>
+using namespace std;
+int main(){
+    int n,a[100];
+    cin>>n;
+    for(int i=0;i<n;i++) cin>>a[i];
+    for(int i=0;i<n;i++){
+        for(int j=i+1;j<n;j++){
+            if(a[i]==a[j]){
+                for(int k=j;k<n-1;k++) a[k]=a[k+1];
+                n--;
+                j--;
+            }
+        }
+    }
+    for(int i=0;i<n;i++) cout<<a[i]<<" ";
+}
+Q3) Output prediction
+// Output: 10000
+Q4a) Reverse array
+#include <iostream>
+using namespace std;
+int main(){
+    int n,a[100],temp;
+    cin>>n;
+    for(int i=0;i<n;i++) cin>>a[i];
+    for(int i=0;i<n/2;i++){
+        temp=a[i];
+        a[i]=a[n-i-1];
+        a[n-i-1]=temp;
+    }
+    for(int i=0;i<n;i++) cout<<a[i]<<" ";
+}
+Q4b) Matrix multiplication
+#include <iostream>
+using namespace std;
+int main(){
+    int a[10][10],b[10][10],c[10][10],r1,c1,r2,c2;
+    cin>>r1>>c1;
+    for(int i=0;i<r1;i++) for(int j=0;j<c1;j++) cin>>a[i][j];
+    cin>>r2>>c2;
+    for(int i=0;i<r2;i++) for(int j=0;j<c2;j++) cin>>b[i][j];
+    if(c1!=r2) return 0;
+    for(int i=0;i<r1;i++) for(int j=0;j<c2;j++){
+        c[i][j]=0;
+        for(int k=0;k<c1;k++) c[i][j]+=a[i][k]*b[k][j];
+    }
+    for(int i=0;i<r1;i++){
+        for(int j=0;j<c2;j++) cout<<c[i][j]<<" ";
+        cout<<endl;
+    }
+}
+Q4c) Transpose of matrix
+#include <iostream>
+using namespace std;
+int main(){
+    int a[10][10],t[10][10],r,c;
+    cin>>r>>c;
+    for(int i=0;i<r;i++) for(int j=0;j<c;j++) cin>>a[i][j];
+    for(int i=0;i<r;i++) for(int j=0;j<c;j++) t[j][i]=a[i][j];
+    for(int i=0;i<c;i++){
+        for(int j=0;j<r;j++) cout<<t[i][j]<<" ";
+        cout<<endl;
+    }
+}
+Q5) Sum of every row and column
+#include <iostream>
+using namespace std;
+int main(){
+    int a[10][10],r,c,sum;
+    cin>>r>>c;
+    for(int i=0;i<r;i++) for(int j=0;j<c;j++) cin>>a[i][j];
+    for(int i=0;i<r;i++){
+        sum=0;
+        for(int j=0;j<c;j++) sum+=a[i][j];
+        cout<<"Row "<<i<<" sum = "<<sum<<endl;
+    }
+    for(int j=0;j<c;j++){
+        sum=0;
+        for(int i=0;i<r;i++) sum+=a[i][j];
+        cout<<"Column "<<j<<" sum = "<<sum<<endl;
+    }
+}
