@@ -1,0 +1,13 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Linear time solution
+int findMissingLinear(const vector<int>& arr, int n) {
+    for (int i = 0; i < n - 1; i++) {
+        if (arr[i] != i + 1) {
+            return i + 1; // missing number found
+        }
+    }
+    return n; // if no mismatch, last number is missing
+}
